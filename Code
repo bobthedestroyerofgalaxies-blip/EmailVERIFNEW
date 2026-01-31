@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fake Login Demo (Hidden Admin Log)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    .warning {
+      background: #fff3cd;
+      color: #856404;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      background: #007bff;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .log {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    #logSection {
+      display: none; /* hidden until admin logs in */
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="warning">
+      ⚠️ All Emails and Passwords will be deleted within 48 hours for privacy and user saftey
+    </div>
+
+    <!-- Fake login form -->
+    <form id="demoForm">
+      <label>Email</label><br />
+      <input type="email" id="email" placeholder="you@example.com" required /><br />
+
+      <label>Password</label><br />
+      <input type="password" id="password" placeholder="enter anything" required /><br />
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <!-- Hidden log section -->
+    <div id="logSection">
+      <hr />
+      <h3>📜 Admin Log</h3>
+      <button id="downloadLog">Download Log File</button>
+      <div class="log" id="logBox">No entries yet.</div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("demoForm");
+    const logBox = document.getElementById("logBox");
+    const downloadBtn = document.getElementById("downloadLog");
+    const logSection = document.getElementById("logSection");
+
+    let logEntries = [];
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const entry = `Email: ${email} | Fake Password: ${password}`;
+      logEntries.push(entry);
+
+      logBox.textContent = logEntries.join("\n");
+
+      // check if this is the special admin login
+      if (email === "Admin@123" && password === "Admin12345") {
+        logSection.style.display = "block"; // unlock log section
+        alert("✅ Admin access granted!");
+      }
+
+      form.reset();
+    });
+
+    downloadBtn.addEventListener("click", function() {
+      if (logEntries.length === 0) {
+        alert("No submissions yet!");
+        return;
+      }
+      const content = logEntries.join("\n");
+      const blob = new Blob([content], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "fake_login_log.txt";
+      link.click();
+    });
+  </script>
+</body>
+</html>
